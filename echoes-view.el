@@ -1,12 +1,16 @@
 ;; -*- lexical-binding: t -*-
 
-
-
 (defun echoes-of-emacs--btn--up ()
   (interactive)
   (funcall echoes-loop-function
            #'(lambda (game)
-               
+               (let* ((world (oref game world))
+                      (entities (oref game entities))
+                      (orig-player (-find (lambda (ent)
+                                            (string= (oref ent char)
+                                                     "@"))
+                                          entities))))
+               (clone )
                )))
 
 (defvar echoes-of-emacs-mode-map nil
@@ -26,23 +30,26 @@ Another line of documentation."
   (make-local-variable 'echoes-current-win-height)
   (make-local-variable 'echoes-loop-function))
 
-(defun echoes-get-or-create-world-buffer (world)
-  (if (slot-boundp world :buffer)
-      (oref world :buffer)
-    (let ((buffer (get-buffer-create "*Echoes of Emacs*")))
-      (with-current-buffer buffer
-        (echoes-of-emacs-mode))
-      (oset world :buffer buffer)
-      buffer)))
+(defun echoes-create-world-buffer ()
+  (let ((buffer (get-buffer-create "*Echoes of Emacs*")))
+    (with-current-buffer buffer
+      (echoes-of-emacs-mode)
+      (setq echoes-loop-function
+            (lambda ())
+            ))
+    buffer))
 
-(defun echoes-render-world (world)
-  (let ((buffer (echoes-get-or-create-world-buffer world))
+(defun echoes-make-loop-function ()
+)
+
+(defun echoes-render-world (world world-buffer)
+  (let ((buffer world-buffer)
         (width  (oref world width))
         (height (oref world height))
         (entities (oref world entities)))
     (let ((inhibit-read-only t))
       (with-current-buffer buffer
-        (echoes-render-initialize-spaces width height)
+        (echoes-clear-buffer-and-render-spaces width height)
         (-each entities
           (lambda (ent)
             (echoes-render-entity ent)))))))
@@ -57,7 +64,7 @@ Another line of documentation."
     (delete-char 1)
     (insert char)))
 
-(defun echoes-render-initialize-spaces (width height)
+(defun echoes-clear-buffer-and-render-spaces (width height)
   (erase-buffer)
   (cl-loop
    for row from 1 to height do

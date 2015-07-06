@@ -10,21 +10,21 @@
 (defvar echoes-current-game nil
   "The current game.
 This is a buffer-local variable so that commands run from
-a buffer can determine the running game."
-  )
+a buffer can determine the running game.")
 
 (defun echoes-of-emacs-start ()
-  "start play echoes!"
+  "start playing echoes!"
   (interactive)
   (let* ((game (echoes-build-game))
          (world (oref game
-                      :world)))
-    (pop-to-buffer (oref world :buffer))))
+                      world))
+         (world-buffer (echoes-create-world-buffer)))
+    (pop-to-buffer world-buffer)
+    (echoes-render-world world world-buffer)))
 
 (defun echoes-loop (fn)
   (setq (funcall fn))
-  (echoes-render-world world)
-  )
+  (echoes-render-world world))
 
 (provide 'echoes)
 
