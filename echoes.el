@@ -16,15 +16,12 @@ a buffer can determine the running game.")
   "start playing echoes!"
   (interactive)
   (let* ((game (echoes-build-game))
-         (world (oref game
-                      world))
-         (world-buffer (echoes-create-world-buffer)))
+         (world-buffer (echoes-create-world-buffer game)))
     (pop-to-buffer world-buffer)
-    (echoes-render-world world world-buffer)))
+    (echoes-render-world world-buffer)))
 
 (defun echoes-loop (fn)
   (setq (funcall fn))
   (echoes-render-world world))
 
 (provide 'echoes)
-

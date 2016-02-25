@@ -2,20 +2,14 @@
 
 (defun echoes-of-emacs--btn--up ()
   (interactive)
-  (funcall echoes-loop-function
-           #'(lambda (game)
-               (let* ((world (oref game world))
-                      (entities (oref game entities))
-                      (orig-player (-find (lambda (ent)
-                                            (string= (oref ent char)
-                                                     "@"))
-                                          entities))))
-               (clone )
-               )))
+  (echoes--message 'btn-up))
+
+(defvar echoes-of-emacs-current-state nil
+  "Variable to contain the echoes state")
+
 
 (defvar echoes-of-emacs-mode-map nil
   "Keymap for echoes of emacs buffers.")
-
 (setq echoes-of-emacs-mode-map
       (let ((map (make-sparse-keymap)))
         (define-key map (kbd "<up>") #'echoes-of-emacs--btn--up)
@@ -28,27 +22,23 @@
 Another line of documentation."
   (make-local-variable 'echoes-current-win-width)
   (make-local-variable 'echoes-current-win-height)
-  (make-local-variable 'echoes-loop-function))
+  (make-local-variable 'echoes-game-state))
 
-(defun echoes-create-world-buffer ()
+(defun echoes-create-world-buffer (game)
   (let ((buffer (get-buffer-create "*Echoes of Emacs*")))
     (with-current-buffer buffer
       (echoes-of-emacs-mode)
-      (setq echoes-loop-function
-            (lambda ())
-            ))
+      (setq echoes-game-state game))
     buffer))
 
-(defun echoes-make-loop-function ()
-)
-
-(defun echoes-render-world (world world-buffer)
-  (let ((buffer world-buffer)
-        (width  (oref world width))
-        (height (oref world height))
-        (entities (oref world entities)))
-    (let ((inhibit-read-only t))
-      (with-current-buffer buffer
+(defun echoes-render-world (world-buffer)
+  (let ((inhibit-read-only t))
+    (with-current-buffer world-buffer
+      (let* ((buffer world-buffer)
+             (world (oref echoes-game-state world))
+             (width  (oref world width))
+             (height (oref world height))
+             (entities (oref world entities)))
         (echoes-clear-buffer-and-render-spaces width height)
         (-each entities
           (lambda (ent)
