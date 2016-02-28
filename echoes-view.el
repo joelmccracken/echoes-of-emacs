@@ -1,12 +1,13 @@
 ;; -*- lexical-binding: t -*-
 
+(require 'dash)
+
 (defun echoes-of-emacs--btn--up ()
   (interactive)
   (echoes--message 'btn-up))
 
 (defvar echoes-of-emacs-current-state nil
   "Variable to contain the echoes state")
-
 
 (defvar echoes-of-emacs-mode-map nil
   "Keymap for echoes of emacs buffers.")
