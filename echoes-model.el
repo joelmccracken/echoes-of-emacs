@@ -20,7 +20,8 @@
                  :world world)))
 
 (defclass echoes-game ()
-  ((world :initarg :world)))
+  ((world :initarg :world)
+   (buffer :initarg :buffer)))
 
 (defclass echoes-game-params ()
   ((width :initarg :width)

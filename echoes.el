@@ -3,6 +3,10 @@
 ;; use `clone` for duping eieio objects
 (require 'eieio)
 
+(require 'cask)
+
+(require 'dash)
+
 (require 'echoes-model)
 (require 'echoes-view)
 
@@ -15,13 +19,33 @@ a buffer can determine the running game.")
 (defun echoes-of-emacs-start ()
   "start playing echoes!"
   (interactive)
-  (let* ((game (echoes-build-game))
-         (world-buffer (echoes-create-world-buffer game)))
+  (let* ((world-buffer (echoes-create-world-buffer)))
     (pop-to-buffer world-buffer)
-    (echoes-render-world world-buffer)))
+    (echoes--message `(initialize ,world-buffer))))
 
-(defun echoes-loop (fn)
-  (setq (funcall fn))
-  (echoes-render-world world))
+(defun echoes--message (message)
+  "Send a message to update the state of the game.
+
+Invokes echoes--update. What echoes--update returns is
+set as the next state."
+  (setq echoes-current-game
+        (echoes--update echoes-current-game
+                        message))
+  (echoes-render-world (oref echoes-current-game buffer)
+                       echoes-current-game))
+
+(defun echoes--update (state msg)
+  (setq result
+        (pcase msg
+          (`(initialize ,buffer)
+           (let ((game (echoes-build-game)))
+             (clone game :buffer buffer)))
+          (`btn-up
+                      )
+          (`btn-left :left)
+          (`btn-right :right)
+          (`btn-down :down)))
+  (message "Got: %s; result: %s" msg result)
+  result)
 
 (provide 'echoes)
