@@ -4,6 +4,7 @@
   (let* ((entities
           (list
            (echoes-entity "player"
+                          :type :player
                           :char "@"
                           :x 1
                           :y 1)
@@ -19,6 +20,7 @@
     (echoes-game "the game"
                  :world world)))
 
+
 (defclass echoes-game ()
   ((world :initarg :world)
    (buffer :initarg :buffer)))
@@ -29,6 +31,7 @@
 
 (defclass echoes-entity ()
   ((char :initarg :char)
+   (type :initarg :type)
    (x :initarg :x)
    (y :initarg :y)))
 

@@ -9,6 +9,7 @@
 
 (require 'echoes-model)
 (require 'echoes-view)
+(require 'accessors)
 
 
 (defvar echoes-current-game nil
@@ -34,6 +35,7 @@ set as the next state."
   (echoes-render-world (oref echoes-current-game buffer)
                        echoes-current-game))
 
+
 (defun echoes--update (state msg)
   (setq result
         (pcase msg
@@ -41,11 +43,20 @@ set as the next state."
            (let ((game (echoes-build-game)))
              (clone game :buffer buffer)))
           (`btn-up
-                      )
+
+           nil)
           (`btn-left :left)
           (`btn-right :right)
           (`btn-down :down)))
   (message "Got: %s; result: %s" msg result)
   result)
+
+
+
+
+
+
+
+
 
 (provide 'echoes)
